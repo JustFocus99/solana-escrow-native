@@ -1,8 +1,9 @@
 # Architecture
 
-This document lays out the shape the escrow program is being built toward,
-before any of its business logic exists. Writing this now — while only
-[validation.rs](../programs/escrow/src/validation.rs) is implemented — is
+This document lays out the shape the escrow program is being built toward.
+Most of it is still ahead of the code: the skeleton loads and the PDA
+derivation is implemented, but every instruction is still rejected
+unconditionally (see [README.md](../README.md#status)). Writing this now is
 deliberate: it's easier to get the boundaries between these pieces right on
 paper than to untangle them after the fact. Each section below names the
 module that will hold that piece of the program, its job, and which of the
@@ -12,14 +13,14 @@ study docs its design decisions come from.
 
 | Component | Planned file | Status |
 |---|---|---|
-| Program entrypoint | `programs/escrow/src/entrypoint.rs` | not yet written |
-| Instruction decoder | `programs/escrow/src/instruction.rs` | not yet written |
-| Processor router | `programs/escrow/src/processor.rs` | not yet written |
-| Escrow state account | `programs/escrow/src/state.rs` | not yet written |
+| Program entrypoint | `programs/escrow/src/entrypoint.rs` | **implemented** — feature-gated `entrypoint!` |
+| Instruction decoder | `programs/escrow/src/instruction.rs` | not yet written (stub) |
+| Processor router | `programs/escrow/src/processor.rs` | **skeleton implemented** — rejects every instruction with `InvalidInstructionData`; no routing yet |
+| Escrow state account | `programs/escrow/src/state.rs` | not yet written (stub) |
 | Escrow PDA | `programs/escrow/src/validation.rs` | **`derive_escrow_pda` implemented** |
 | Vault token account | (validated in `processor.rs`, not a module of its own) | not yet written |
-| Token Program CPI | `programs/escrow/src/cpi.rs` | not yet written |
-| Native Rust integration tests | `programs/escrow/tests/` | `pda_derivation.rs` implemented; others pending |
+| Token Program CPI | `programs/escrow/src/cpi.rs` | not yet written (stub) |
+| Native Rust integration tests | `programs/escrow/tests/` | `pda_derivation.rs` and `skeleton.rs` implemented; per-instruction tests pending |
 | Local validator client | not yet created (likely `client/` or `tests/` using `solana-test-validator`) | not yet written |
 
 ## Program entrypoint
