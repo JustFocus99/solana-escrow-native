@@ -6,5 +6,49 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "lib"]
 
+[features]
+no-entrypoint = []
+custom-heap = []
+custom-panic = []
+
 [dependencies]
 solana-program = "4.0.0"
+
+# solana-program-test's transitive dependency on
+# solana-transaction-status-client-types has not migrated to wincode 0.6 as
+# of this writing, while several other crates in the graph have. These pins
+# hold the whole resolution on the wincode 0.5 line so only one copy of
+# wincode exists; see docs/architecture.md's toolchain notes.
+solana-hash = "=4.5.0"
+solana-address = "=2.6.1"
+solana-nonce = "=3.2.1"
+solana-system-interface = "=3.2.0"
+solana-fee-calculator = "=3.2.2"
+solana-bls-signatures = "=3.3.0"
+solana-clock = "=3.1.1"
+solana-epoch-schedule = "=3.2.0"
+solana-hard-forks = "=3.1.1"
+solana-hash-512 = "=1.1.0"
+solana-inflation = "=3.1.1"
+solana-instruction-error = "=2.4.0"
+solana-last-restart-slot = "=3.1.0"
+solana-nullable = "=1.2.0"
+solana-rent = "=4.3.0"
+solana-reward-info = "=6.2.0"
+solana-short-vec = "=3.2.2"
+solana-signature = "=3.4.1"
+solana-slot-history = "=3.1.0"
+solana-stake-history = "=1.0.0"
+solana-transaction-error = "=3.3.1"
+solana-zero-copy = "=1.1.1"
+
+[dev-dependencies]
+solana-program-test = { version = "4", features = ["agave-unstable-api"] }
+solana-sdk = "4"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+# `entrypoint!` checks `cfg(target_os = "solana")` internally; that value is
+# only known to the sbpf-solana target used by `cargo build-sbf`; declare it
+# here so a host `cargo check`/`clippy` doesn't warn about it.
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ["cfg(target_os, values(\"solana\"))"] }
